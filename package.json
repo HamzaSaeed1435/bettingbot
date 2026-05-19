@@ -1,0 +1,23 @@
+{
+  "name": "arb-bot",
+  "version": "1.0.0",
+  "description": "Sports arbitrage scanner — fetches odds via The Odds API, sends Telegram alerts",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "keywords": [
+    "arbitrage",
+    "odds",
+    "betting",
+    "sports"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
+  }
+}

@@ -1,0 +1,345 @@
+[
+  {
+    "sport": "Tennis WTA",
+    "game": "Kristina Mladenovic vs Xiyu Wang",
+    "arb": {
+      "outcomes": [
+        {
+          "name": "Kristina Mladenovic",
+          "odds": 13,
+          "bookmaker": "BoyleSports",
+          "stake": 23.6
+        },
+        {
+          "name": "Xiyu Wang",
+          "odds": 1.11,
+          "bookmaker": "GTbets",
+          "stake": 276.4
+        }
+      ],
+      "impliedSum": 0.9778,
+      "profitPercent": 2.27,
+      "totalBet": 300,
+      "guaranteedProfit": 6.8
+    },
+    "ts": "2026-05-19T14:28:02.515Z"
+  },
+  {
+    "sport": "Tennis WTA",
+    "game": "Darja Semenistaja vs Iryna Shymanovich",
+    "arb": {
+      "outcomes": [
+        {
+          "name": "Darja Semenistaja",
+          "odds": 2.05,
+          "bookmaker": "Betway",
+          "stake": 167.74
+        },
+        {
+          "name": "Iryna Shymanovich",
+          "odds": 2.6,
+          "bookmaker": "Unibet (FR)",
+          "stake": 132.26
+        }
+      ],
+      "impliedSum": 0.8724,
+      "profitPercent": 14.62,
+      "totalBet": 300,
+      "guaranteedProfit": 43.87
+    },
+    "ts": "2026-05-19T14:28:02.040Z"
+  },
+  {
+    "sport": "Tennis WTA",
+    "game": "Nuria Brancaccio vs Kaitlin Quevedo",
+    "arb": {
+      "outcomes": [
+        {
+          "name": "Kaitlin Quevedo",
+          "odds": 4.33,
+          "bookmaker": "BoyleSports",
+          "stake": 73.3
+        },
+        {
+          "name": "Nuria Brancaccio",
+          "odds": 1.4,
+          "bookmaker": "Nordic Bet",
+          "stake": 226.7
+        }
+      ],
+      "impliedSum": 0.9452,
+      "profitPercent": 5.79,
+      "totalBet": 300,
+      "guaranteedProfit": 17.38
+    },
+    "ts": "2026-05-19T14:28:01.624Z"
+  },
+  {
+    "sport": "Tennis ATP",
+    "game": "Emilio Nava vs Bu Yunchaokete",
+    "arb": {
+      "outcomes": [
+        {
+          "name": "Bu Yunchaokete",
+          "odds": 3.45,
+          "bookmaker": "Smarkets",
+          "stake": 88.34
+        },
+        {
+          "name": "Emilio Nava",
+          "odds": 1.44,
+          "bookmaker": "GTbets",
+          "stake": 211.66
+        }
+      ],
+      "impliedSum": 0.9843,
+      "profitPercent": 1.6,
+      "totalBet": 300,
+      "guaranteedProfit": 4.79
+    },
+    "ts": "2026-05-19T14:27:59.971Z"
+  },
+  {
+    "sport": "Tennis ATP",
+    "game": "Lorenzo Giustino vs Kyrian Jacquet",
+    "arb": {
+      "outcomes": [
+        {
+          "name": "Kyrian Jacquet",
+          "odds": 1.38,
+          "bookmaker": "Smarkets",
+          "stake": 258.01
+        },
+        {
+          "name": "Lorenzo Giustino",
+          "odds": 8.48,
+          "bookmaker": "Pinnacle",
+          "stake": 41.99
+        }
+      ],
+      "impliedSum": 0.8426,
+      "profitPercent": 18.69,
+      "totalBet": 300,
+      "guaranteedProfit": 56.06
+    },
+    "ts": "2026-05-19T14:27:59.482Z"
+  },
+  {
+    "sport": "Tennis ATP",
+    "game": "Alex Molcan vs Oliver Crawford",
+    "arb": {
+      "outcomes": [
+        {
+          "name": "Alex Molcan",
+          "odds": 1.17,
+          "bookmaker": "BoyleSports",
+          "stake": 276.15
+        },
+        {
+          "name": "Oliver Crawford",
+          "odds": 13.55,
+          "bookmaker": "Pinnacle",
+          "stake": 23.85
+        }
+      ],
+      "impliedSum": 0.9285,
+      "profitPercent": 7.7,
+      "totalBet": 300,
+      "guaranteedProfit": 23.1
+    },
+    "ts": "2026-05-19T14:27:58.772Z"
+  },
+  {
+    "sport": "EPL Football",
+    "game": "Bournemouth vs Manchester City",
+    "arb": {
+      "outcomes": [
+        {
+          "name": "Bournemouth",
+          "odds": 5.33,
+          "bookmaker": "1xBet",
+          "stake": 56.93
+        },
+        {
+          "name": "Manchester City",
+          "odds": 1.7,
+          "bookmaker": "GTbets",
+          "stake": 178.5
+        },
+        {
+          "name": "Draw",
+          "odds": 4.7,
+          "bookmaker": "Smarkets",
+          "stake": 64.56
+        }
+      ],
+      "impliedSum": 0.9886,
+      "profitPercent": 1.15,
+      "totalBet": 300,
+      "guaranteedProfit": 3.45
+    },
+    "ts": "2026-05-19T14:27:53.425Z"
+  },
+  {
+    "sport": "Tennis WTA",
+    "game": "Kristina Mladenovic vs Xiyu Wang",
+    "arb": {
+      "outcomes": [
+        {
+          "name": "Kristina Mladenovic",
+          "odds": 13,
+          "bookmaker": "BoyleSports",
+          "stake": 23.6
+        },
+        {
+          "name": "Xiyu Wang",
+          "odds": 1.11,
+          "bookmaker": "GTbets",
+          "stake": 276.4
+        }
+      ],
+      "impliedSum": 0.9778,
+      "profitPercent": 2.27,
+      "totalBet": 300,
+      "guaranteedProfit": 6.8
+    },
+    "ts": "2026-05-19T14:04:00.973Z"
+  },
+  {
+    "sport": "Tennis ATP",
+    "game": "Emilio Nava vs Bu Yunchaokete",
+    "arb": {
+      "outcomes": [
+        {
+          "name": "Bu Yunchaokete",
+          "odds": 3.45,
+          "bookmaker": "Smarkets",
+          "stake": 88.34
+        },
+        {
+          "name": "Emilio Nava",
+          "odds": 1.44,
+          "bookmaker": "GTbets",
+          "stake": 211.66
+        }
+      ],
+      "impliedSum": 0.9843,
+      "profitPercent": 1.6,
+      "totalBet": 300,
+      "guaranteedProfit": 4.79
+    },
+    "ts": "2026-05-19T14:03:59.744Z"
+  },
+  {
+    "sport": "Tennis ATP",
+    "game": "Pierre-Hugues Herbert vs Kaichi Uchida",
+    "arb": {
+      "outcomes": [
+        {
+          "name": "Kaichi Uchida",
+          "odds": 9,
+          "bookmaker": "BoyleSports",
+          "stake": 36.07
+        },
+        {
+          "name": "Pierre-Hugues Herbert",
+          "odds": 1.23,
+          "bookmaker": "Pinnacle",
+          "stake": 263.93
+        }
+      ],
+      "impliedSum": 0.9241,
+      "profitPercent": 8.21,
+      "totalBet": 300,
+      "guaranteedProfit": 24.63
+    },
+    "ts": "2026-05-19T14:03:59.417Z"
+  },
+  {
+    "sport": "EPL Football",
+    "game": "Bournemouth vs Manchester City",
+    "arb": {
+      "outcomes": [
+        {
+          "name": "Bournemouth",
+          "odds": 5.3,
+          "bookmaker": "Smarkets",
+          "stake": 57.19
+        },
+        {
+          "name": "Manchester City",
+          "odds": 1.7,
+          "bookmaker": "GTbets",
+          "stake": 178.31
+        },
+        {
+          "name": "Draw",
+          "odds": 4.7,
+          "bookmaker": "Betfair",
+          "stake": 64.5
+        }
+      ],
+      "impliedSum": 0.9897,
+      "profitPercent": 1.04,
+      "totalBet": 300,
+      "guaranteedProfit": 3.13
+    },
+    "ts": "2026-05-19T14:03:55.343Z"
+  },
+  {
+    "sport": "Tennis WTA",
+    "game": "Kristina Mladenovic vs Xiyu Wang",
+    "arb": {
+      "outcomes": [
+        {
+          "name": "Kristina Mladenovic",
+          "odds": 11.48,
+          "bookmaker": "Pinnacle",
+          "stake": 26.45
+        },
+        {
+          "name": "Xiyu Wang",
+          "odds": 1.11,
+          "bookmaker": "GTbets",
+          "stake": 273.55
+        }
+      ],
+      "impliedSum": 0.988,
+      "profitPercent": 1.21,
+      "totalBet": 300,
+      "guaranteedProfit": 3.64
+    },
+    "ts": "2026-05-19T13:48:14.449Z"
+  },
+  {
+    "sport": "EPL Football",
+    "game": "Bournemouth vs Manchester City",
+    "arb": {
+      "outcomes": [
+        {
+          "name": "Bournemouth",
+          "odds": 5.38,
+          "bookmaker": "1xBet",
+          "stake": 56.63
+        },
+        {
+          "name": "Manchester City",
+          "odds": 1.7,
+          "bookmaker": "GTbets",
+          "stake": 179.22
+        },
+        {
+          "name": "Draw",
+          "odds": 4.75,
+          "bookmaker": "Unibet (FR)",
+          "stake": 64.14
+        }
+      ],
+      "impliedSum": 0.9846,
+      "profitPercent": 1.56,
+      "totalBet": 300,
+      "guaranteedProfit": 4.68
+    },
+    "ts": "2026-05-19T13:48:08.993Z"
+  }
+]
