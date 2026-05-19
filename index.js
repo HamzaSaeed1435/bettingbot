@@ -203,45 +203,51 @@ function formatAlert(sport, game, arb) {
     sport.key.includes('soccer') ? '⚽' :
     sport.key.includes('tennis') ? '🎾' : '🏀';
 
-  // 🎯 profit color indicator
+  // LIVE / PRE-MATCH detection
+  const isLive = game.in_play === true;
+  const matchStatus = isLive ? '🔴 LIVE MATCH' : '🟢 PRE-MATCH';
+
+  // profit indicator
   const profitEmoji =
     arb.profitPercent >= 2 ? '🟢' :
     arb.profitPercent >= 1 ? '🟡' : '🔴';
-
-  const tournamentName = sport.name;
 
   const lines = [
     `${emoji} <b>ARBITRAGE ALERT</b> ${profitEmoji}`,
     ``,
 
+    `📡 <b>Status:</b> ${matchStatus}`,
     `🏆 <b>Sport:</b> ${sport.name}`,
-    `🎯 <b>Tournament:</b> <code>${tournamentName}</code>`,
+    `🎯 <b>Tournament:</b> <code>${sport.name}</code>`,
     `🔥 <b>Match:</b> ${game.home_team} vs ${game.away_team}`,
-
-    `📅 <b>Start:</b> ${new Date(game.commence_time).toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' })} (Istanbul)`,
-
     ``,
+
+    `📅 <b>Start:</b> ${new Date(game.commence_time).toLocaleString('tr-TR', {
+      timeZone: 'Europe/Istanbul'
+    })} (Istanbul)`,
+    ``,
+
     `💰 <b>Profit:</b> ${profitEmoji} +${arb.profitPercent}%`,
     `💵 <b>Total Stake:</b> $${arb.totalBet}`,
     `📈 <b>Guaranteed Profit:</b> $${arb.guaranteedProfit}`,
-
     ``,
     `📊 <b>BET BREAKDOWN</b>`,
   ];
 
   for (const o of arb.outcomes) {
-    const bookColor =
+    const bookEmoji =
       o.bookmaker.toLowerCase().includes('bet365') ? '🟢' :
       o.bookmaker.toLowerCase().includes('pinnacle') ? '🔵' : '⚪';
 
     lines.push(
-      `• ${bookColor} <b>${o.name}</b> @ <b>${o.odds}</b>`,
+      `• ${bookEmoji} <b>${o.name}</b> @ <b>${o.odds}</b>`,
       `  └ 📍 ${o.bookmaker} → Stake: <b>$${o.stake}</b>`
     );
   }
 
   lines.push(``);
   lines.push(`⚖️ <b>Implied Sum:</b> ${arb.impliedSum}`);
+  lines.push(`🕐 <i>${new Date().toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' })} Istanbul</i>`);
 
   return lines.join('\n');
 }
