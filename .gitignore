@@ -1,0 +1,6 @@
+node_modules/
+.env
+odds-cache.json
+*.log
+*.pem
+.claude/settings.local.json

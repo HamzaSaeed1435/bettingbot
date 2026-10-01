@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How It Works — Arbitrage Ledger</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<nav class="site-nav">
+  <a class="site-nav-brand" href="/">
+    <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true">
+      <circle cx="16" cy="16" r="15" fill="var(--brass)"/>
+      <text x="16" y="21.5" font-family="Georgia, serif" font-size="16" font-weight="700" fill="var(--paper)" text-anchor="middle">&#177;</text>
+    </svg>
+    <span>Arb<span class="accent">itrage</span> Ledger</span>
+  </a>
+  <div class="site-nav-right">
+    <div class="site-nav-links">
+      <a href="/">Ledger</a>
+      <a href="/open-bets.html">Open Bets</a>
+      <a href="/history.html">History</a>
+      <a href="/how-it-works.html" class="active">How it works</a>
+      <a href="/faq.html">FAQ</a>
+    </div>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light/dark theme" title="Toggle light/dark theme">
+      <svg class="icon-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="2.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21.5" y2="12"/><line x1="5" y1="5" x2="6.8" y2="6.8"/><line x1="17.2" y1="17.2" x2="19" y2="19"/><line x1="19" y1="5" x2="17.2" y2="6.8"/><line x1="6.8" y1="17.2" x2="5" y2="19"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" stroke="none" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4 6.8 6.8 0 0 0 20 14.5Z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<div class="doc-page">
+  <div class="doc-title">How this ledger works</div>
+  <div class="doc-subtitle">A quick guide to arbitrage betting, and how balance, open bets, and settlement fit together on this page.</div>
+
+  <div class="doc-body">
+    <h2>What is arbitrage betting?</h2>
+    <p>Arbitrage betting ("arbing") means betting on every possible outcome of the same event, spread across different bookmakers, using odds that are slightly out of line with each other. Done correctly, the combined stakes guarantee a profit no matter which outcome actually happens — the profit comes from the mismatch between bookmakers' odds, not from predicting the result.</p>
+
+    <div class="example-box">
+      <div class="label">Simplified example</div>
+      <p>A match has two possible outcomes. Bookmaker A offers odds of 1.95 on outcome one; Bookmaker B offers odds of 2.05 on outcome two. Splitting a stake across both sides, in the right proportion, locks in the same profit regardless of which outcome wins.</p>
+    </div>
+
+    <h2>Open, then settled automatically</h2>
+    <p>When a real arbitrage bet is placed, it's logged here as <strong>Open</strong> — the real match, the real odds taken at each bookmaker, the real stake, and the profit that's already locked in at the moment the bets were placed. That profit doesn't change based on the result; that's the point of arbitrage.</p>
+    <p>Once a match's real end time (tracked in UTC) has passed, it moves itself out of Open and into <strong>History</strong> without anyone needing to close it out manually — the balance updates at that point.</p>
+
+    <h2>What the numbers mean</h2>
+    <ul>
+      <li><strong>Current balance</strong> — total funds after every settled match to date, starting from the agreed opening balance.</li>
+      <li><strong>Pending (open) P/L</strong> — profit already locked in on matches still marked Open, not yet folded into the balance.</li>
+      <li><strong>Lifetime profit</strong> — the sum of profit across every match that has settled so far.</li>
+    </ul>
+
+    <h2>Times and timezone</h2>
+    <p>Match end times are stored in UTC, and settlement is checked automatically. Times shown on this page are converted to your device's local timezone for readability, but the underlying check always runs on UTC.</p>
+  </div>
+
+  <div class="doc-links">
+    <a href="/">&larr; Back to ledger</a>
+    <a href="/faq.html">FAQ &rarr;</a>
+  </div>
+</div>
+
+<script src="/common.js"></script>
+<script>initThemeToggle();</script>
+</body>
+</html>
