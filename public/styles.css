@@ -523,3 +523,9 @@ footer.note{ text-align:center; color:var(--ink-dim); font-size:.76rem; margin-t
 .field-error{ color:var(--loss); font-size:.76rem; line-height:1.35; }
 .field input.invalid, .field textarea.invalid{ border-color:var(--loss); }
 .field-hint{ color:var(--ink-dim); font-size:.76rem; line-height:1.4; }
+.wd-details{ display:flex; flex-direction:column; gap:6px; min-width:300px; }
+.wd-detail{ display:grid; grid-template-columns:96px 1fr auto; align-items:center; gap:10px; }
+.wd-detail .k{ font-size:.66rem; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-dim); }
+.wd-detail .v{ font-family:var(--mono); font-size:.84rem; overflow-wrap:anywhere; }
+.copy-btn{ padding:3px 9px; font-size:.68rem; }
+.copy-btn.copied{ color:var(--profit); border-color:var(--profit); }

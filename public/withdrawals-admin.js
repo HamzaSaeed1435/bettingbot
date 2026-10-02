@@ -7,8 +7,42 @@ const WD_STATUS_LABEL = { processing: "Processing", processed: "Processed", canc
 
 function bankLine(label, value) {
   if (!value) return "";
-  return '<div><span class="k">' + label + "</span> " + escapeHtml(value) + "</div>";
+  const v = escapeHtml(value);
+  return (
+    '<div class="wd-detail"><span class="k">' + label + '</span><span class="v">' + v + "</span>" +
+    '<button type="button" class="btn small copy-btn" data-copy="' + v + '" aria-label="Copy ' + label + '">Copy</button></div>'
+  );
 }
+
+async function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  // plain-http fallback — the async clipboard API only exists on https / localhost
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed";
+  ta.style.opacity = "0";
+  document.body.appendChild(ta);
+  ta.select();
+  const ok = document.execCommand("copy");
+  ta.remove();
+  if (!ok) throw new Error("copy failed");
+}
+
+document.addEventListener("click", async (e) => {
+  const btn = e.target.closest(".copy-btn");
+  if (!btn) return;
+  try {
+    await copyText(btn.dataset.copy);
+    btn.textContent = "Copied";
+    btn.classList.add("copied");
+    setTimeout(() => { btn.textContent = "Copy"; btn.classList.remove("copied"); }, 1400);
+  } catch (err) {
+    showToast("Could not copy — select the text and copy it manually");
+  }
+});
 
 function renderAdminWithdrawals(list) {
   const tbody = document.getElementById("wdTbody");
@@ -30,13 +64,14 @@ function renderAdminWithdrawals(list) {
 
       const tdBank = document.createElement("td");
       tdBank.innerHTML =
-        '<div class="match-name">' + escapeHtml(w.accountName) + "</div>" +
-        '<div class="bank-lines">' +
+        '<div class="wd-details">' +
+        bankLine("Account name", w.accountName) +
         bankLine("Bank", w.bankName) +
         bankLine("BSB", w.bsb) +
-        bankLine("Acct", w.accountNumber) +
-        bankLine("SWIFT", w.swift) +
+        bankLine("Account no.", w.accountNumber) +
+        bankLine("SWIFT / BIC", w.swift) +
         bankLine("IBAN", w.iban) +
+        bankLine("Amount", Number(w.amount).toFixed(2)) +
         bankLine("Note", w.note) +
         "</div>";
       tr.appendChild(tdBank);

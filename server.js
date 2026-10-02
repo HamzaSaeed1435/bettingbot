@@ -60,6 +60,63 @@ function requireAuth(req, res, next) {
   next();
 }
 
+// Optional password for the partner-facing pages. The cookie is derived from the
+// password itself, so it survives restarts and stops working when the password changes.
+const SITE_PASSWORD = process.env.SITE_PASSWORD || "";
+const SITE_COOKIE = "arb_site";
+const SITE_COOKIE_MAX_AGE_S = 30 * 24 * 60 * 60;
+const SITE_OPEN_PATHS = new Set(["/login.html", "/admin", "/admin.html", "/api/login", "/api/site-login", "/api/odds"]);
+
+function siteToken() {
+  return crypto.createHmac("sha256", SITE_PASSWORD).update("arb-ledger-site").digest("hex");
+}
+
+function safeEqual(a, b) {
+  const x = Buffer.from(String(a));
+  const y = Buffer.from(String(b));
+  return x.length === y.length && crypto.timingSafeEqual(x, y);
+}
+
+function readCookie(req, name) {
+  const pair = (req.headers.cookie || "")
+    .split(";")
+    .map((s) => s.trim())
+    .find((s) => s.startsWith(name + "="));
+  return pair ? pair.slice(name.length + 1) : "";
+}
+
+function hasAdminSession(req) {
+  const header = req.headers.authorization || "";
+  const expiry = header.startsWith("Bearer ") && sessions.get(header.slice(7));
+  return Boolean(expiry && expiry >= Date.now());
+}
+
+function hasSiteAccess(req) {
+  return !SITE_PASSWORD || safeEqual(readCookie(req, SITE_COOKIE), siteToken()) || hasAdminSession(req);
+}
+
+// Gates pages and API calls; scripts, styles and images stay open so the login page can render.
+app.use((req, res, next) => {
+  const isPage = req.path === "/" || req.path.endsWith(".html");
+  const isApi = req.path.startsWith("/api/");
+  if ((!isPage && !isApi) || SITE_OPEN_PATHS.has(req.path) || hasSiteAccess(req)) return next();
+  if (isApi) return res.status(401).json({ error: "Password required" });
+  res.redirect("/login.html");
+});
+
+app.post("/api/site-login", async (req, res) => {
+  const password = (req.body && req.body.password) || "";
+  if (!SITE_PASSWORD || !safeEqual(password, SITE_PASSWORD)) {
+    await new Promise((resolve) => setTimeout(resolve, 600)); // slow down guessing
+    return res.status(401).json({ error: "Wrong password" });
+  }
+  res.setHeader(
+    "Set-Cookie",
+    `${SITE_COOKIE}=${siteToken()}; Path=/; Max-Age=${SITE_COOKIE_MAX_AGE_S}; HttpOnly; SameSite=Lax${req.secure ? "; Secure" : ""}`
+  );
+  res.json({ ok: true });
+});
+
 function uid() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 }
