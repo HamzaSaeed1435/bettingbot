@@ -6,6 +6,7 @@ const crypto = require("crypto");
 const express = require("express");
 const sheets = require("./sheets");
 const odds = require("./odds");
+const telegram = require("./telegram");
 
 const app = express();
 app.set("trust proxy", true);
@@ -190,6 +191,155 @@ app.post("/api/bets/:id/settle", requireAuth, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Could not settle match" });
+  }
+});
+
+const WITHDRAWAL_STATUSES = ["processing", "processed", "cancelled"];
+const MAX_PENDING_WITHDRAWALS = 20;
+
+function maskTail(value) {
+  const s = String(value || "");
+  return s.length <= 4 ? s : "•••• " + s.slice(-4);
+}
+
+// Partner page is public, so it only ever gets the amount, status and the last
+// digits of the account — full bank details stay behind the admin login.
+function publicWithdrawal(w) {
+  return {
+    id: w.id,
+    amount: w.amount,
+    bankName: w.bankName,
+    accountTail: maskTail(w.accountNumber),
+    status: w.status,
+    requestedAt: w.requestedAt,
+    updatedAt: w.updatedAt,
+  };
+}
+
+function clean(value, max) {
+  return String(value == null ? "" : value).trim().slice(0, max);
+}
+
+// What can be withdrawn right now: the balance minus stakes tied up in open bets
+// and minus requests that are already waiting to be paid out.
+async function withdrawalSnapshot() {
+  const [config, openBets, all] = await Promise.all([sheets.getConfig(), sheets.getOpenBets(), sheets.getWithdrawals()]);
+  const inOpenBets = openBets.reduce((sum, b) => sum + (Number(b.stake) || 0), 0);
+  const pending = all.filter((w) => w.status === "processing");
+  const pendingTotal = pending.reduce((sum, w) => sum + w.amount, 0);
+  const available = Math.max(0, Math.round((config.balance - inOpenBets - pendingTotal) * 100) / 100);
+  return { all, pending, available };
+}
+
+app.get("/api/withdrawals", async (req, res) => {
+  try {
+    const { all, available } = await withdrawalSnapshot();
+    res.json({ withdrawals: all.map(publicWithdrawal), available });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Could not load withdrawals" });
+  }
+});
+
+app.post("/api/withdrawals", async (req, res) => {
+  try {
+    const body = req.body || {};
+    const amount = Math.round(Number(body.amount) * 100) / 100;
+    const accountName = clean(body.accountName, 100);
+    const bankName = clean(body.bankName, 100);
+    const bsb = clean(body.bsb, 10).replace(/[\s-]/g, "");
+    const accountNumber = clean(body.accountNumber, 20).replace(/[\s-]/g, "");
+    const swift = clean(body.swift, 11).toUpperCase();
+    const iban = clean(body.iban, 40).replace(/\s/g, "").toUpperCase();
+    const note = clean(body.note, 200);
+
+    if (!(amount > 0)) return res.status(400).json({ error: "Enter a withdrawal amount" });
+    if (!accountName) return res.status(400).json({ error: "Account holder name required" });
+    if (!bankName) return res.status(400).json({ error: "Bank name required" });
+    if (!/^\d{6}$/.test(bsb)) return res.status(400).json({ error: "BSB must be 6 digits" });
+    if (!/^\d{5,10}$/.test(accountNumber)) return res.status(400).json({ error: "Account number must be 5 to 10 digits" });
+    if (!/^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/.test(swift)) {
+      return res.status(400).json({ error: "SWIFT/BIC must be 8 or 11 characters" });
+    }
+    if (iban && !/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/.test(iban)) {
+      return res.status(400).json({ error: "IBAN doesn't look valid" });
+    }
+
+    const { pending, available } = await withdrawalSnapshot();
+    if (pending.length >= MAX_PENDING_WITHDRAWALS) {
+      return res.status(429).json({ error: "Too many requests are already waiting — try again later" });
+    }
+    if (amount > available) {
+      return res.status(400).json({ error: "Amount is more than the available balance" });
+    }
+
+    const now = Date.now();
+    await sheets.addWithdrawal({
+      id: uid(),
+      amount,
+      accountName,
+      bankName,
+      bsb,
+      accountNumber,
+      swift,
+      iban,
+      note,
+      status: "processing",
+      requestedAt: now,
+      updatedAt: now,
+    });
+    // not awaited — the notification goes out in the background
+    telegram.notify(
+      "New withdrawal request\n" +
+        `Amount: $${amount.toFixed(2)}\n` +
+        `Name: ${accountName}\n` +
+        `Bank: ${bankName}\n` +
+        `Account: ${maskTail(accountNumber)}\n` +
+        (note ? `Note: ${note}\n` : "") +
+        "Status: Processing"
+    );
+
+    const next = await withdrawalSnapshot();
+    res.json({ withdrawals: next.all.map(publicWithdrawal), available: next.available });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Could not submit withdrawal request" });
+  }
+});
+
+app.get("/api/admin/withdrawals", requireAuth, async (req, res) => {
+  try {
+    res.json({ withdrawals: await sheets.getWithdrawals() });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Could not load withdrawals" });
+  }
+});
+
+app.post("/api/admin/withdrawals/:id/status", requireAuth, async (req, res) => {
+  try {
+    const status = (req.body && req.body.status) || "";
+    if (!WITHDRAWAL_STATUSES.includes(status)) {
+      return res.status(400).json({ error: "Unknown status" });
+    }
+    const w = await sheets.setWithdrawalStatus(req.params.id, status);
+    if (!w) return res.status(404).json({ error: "Withdrawal not found" });
+    const [withdrawals, state] = await Promise.all([sheets.getWithdrawals(), buildState()]);
+    res.json({ withdrawals, state });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Could not update withdrawal" });
+  }
+});
+
+app.delete("/api/admin/withdrawals/:id", requireAuth, async (req, res) => {
+  try {
+    const removed = await sheets.removeWithdrawal(req.params.id);
+    if (!removed) return res.status(404).json({ error: "Withdrawal not found" });
+    res.json({ withdrawals: await sheets.getWithdrawals() });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Could not delete withdrawal" });
   }
 });
 

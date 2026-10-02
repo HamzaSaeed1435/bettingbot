@@ -40,7 +40,8 @@ function showAdmin() {
   startUtcClock();
   startCountdownTicker();
   refresh();
-  pollTimer = setInterval(refresh, 30000);
+  refreshWithdrawals();
+  pollTimer = setInterval(() => { refresh(); refreshWithdrawals(); }, 30000);
 }
 
 async function refresh() {

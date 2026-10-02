@@ -186,6 +186,22 @@
 
   <section class="block">
     <div class="block-head">
+      <div class="block-title">Withdrawal requests <span class="count" id="wdCount">(0)</span></div>
+    </div>
+    <div class="block-body">
+      <div class="table-wrap">
+        <table class="bets" id="wdTable" style="display:none;">
+          <thead><tr><th>Requested</th><th>Bank details</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+          <tbody id="wdTbody"></tbody>
+        </table>
+      </div>
+      <div class="empty-note" id="wdEmpty">No withdrawal requests yet.</div>
+      <div class="empty-note" style="padding:14px 0 0;">Marking a request <strong>Processed</strong> takes its amount off the balance. Cancelling or deleting leaves the balance alone.</div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-head">
       <div class="block-title">History <span class="count" id="historyCount">(0 days)</span></div>
     </div>
     <div class="block-body">
@@ -208,6 +224,7 @@
 
 <script src="/common.js"></script>
 <script src="/odds-board-admin.js"></script>
+<script src="/withdrawals-admin.js"></script>
 <script src="/app-admin.js"></script>
 </body>
 </html>

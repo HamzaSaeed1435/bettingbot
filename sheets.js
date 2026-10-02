@@ -8,6 +8,7 @@ const TABS = {
   config: "Config",
   openBets: "OpenBets",
   history: "History",
+  withdrawals: "Withdrawals",
 };
 
 // oddsC is appended at the end of each row (rather than inserted after oddsB) so that
@@ -15,6 +16,7 @@ const TABS = {
 const HEADERS = {
   [TABS.openBets]: ["id", "match", "oddsA", "oddsB", "stake", "profit", "matchTime", "addedAt", "oddsC"],
   [TABS.history]: ["id", "match", "oddsA", "oddsB", "stake", "profit", "matchTime", "settledAt", "balanceAfter", "oddsC"],
+  [TABS.withdrawals]: ["id", "amount", "accountName", "bankName", "bsb", "accountNumber", "swift", "iban", "note", "status", "requestedAt", "updatedAt"],
 };
 
 let sheetsClient = null;
@@ -62,6 +64,15 @@ async function ensureSheetsExist() {
           ["Balance", "0"],
         ],
       },
+    });
+  }
+
+  if (!existing.has(TABS.withdrawals)) {
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SHEET_ID,
+      range: `${TABS.withdrawals}!A1`,
+      valueInputOption: "RAW",
+      requestBody: { values: [HEADERS[TABS.withdrawals]] },
     });
   }
 
@@ -283,6 +294,66 @@ async function settleBetNow(id) {
   return bet;
 }
 
+function rowToWithdrawal(r) {
+  return {
+    id: r[0],
+    amount: Number(r[1] || 0),
+    accountName: r[2] || "",
+    bankName: r[3] || "",
+    bsb: r[4] || "",
+    accountNumber: r[5] || "",
+    swift: r[6] || "",
+    iban: r[7] || "",
+    note: r[8] || "",
+    status: r[9] || "processing",
+    requestedAt: Number(r[10] || 0),
+    updatedAt: Number(r[11] || 0),
+  };
+}
+
+function withdrawalToRow(w) {
+  return [w.id, w.amount, w.accountName, w.bankName, w.bsb, w.accountNumber, w.swift, w.iban, w.note, w.status, w.requestedAt, w.updatedAt];
+}
+
+async function getWithdrawals() {
+  const rows = await readRows(TABS.withdrawals);
+  return rows.filter((r) => r[0]).map(rowToWithdrawal);
+}
+
+async function addWithdrawal(w) {
+  await appendRows(TABS.withdrawals, [withdrawalToRow(w)]);
+}
+
+// Changes a request's status. The balance only moves when a request enters or
+// leaves "processed" — that's the point the money has actually been paid out.
+async function setWithdrawalStatus(id, status) {
+  const all = await getWithdrawals();
+  const w = all.find((x) => x.id === id);
+  if (!w) return null;
+  if (w.status === status) return w;
+
+  const wasPaid = w.status === "processed";
+  const nowPaid = status === "processed";
+  if (wasPaid !== nowPaid) {
+    const config = await getConfig();
+    await setConfigValue("Balance", config.balance + (nowPaid ? -w.amount : w.amount));
+  }
+
+  w.status = status;
+  w.updatedAt = Date.now();
+  await writeRows(TABS.withdrawals, all.map(withdrawalToRow));
+  return w;
+}
+
+// Removes the record only — the balance is left as it is.
+async function removeWithdrawal(id) {
+  const all = await getWithdrawals();
+  const next = all.filter((x) => x.id !== id);
+  if (next.length === all.length) return false;
+  await writeRows(TABS.withdrawals, next.map(withdrawalToRow));
+  return true;
+}
+
 module.exports = {
   ensureSheetsExist,
   getConfig,
@@ -293,4 +364,8 @@ module.exports = {
   getHistory,
   settleDueBets,
   settleBetNow,
+  getWithdrawals,
+  addWithdrawal,
+  setWithdrawalStatus,
+  removeWithdrawal,
 };
